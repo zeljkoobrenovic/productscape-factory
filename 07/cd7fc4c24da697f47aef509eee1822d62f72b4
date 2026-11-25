@@ -1,0 +1,91 @@
+productscapes.py
+  s_b78d5a8dc9e4a2::t_97a34cf2406acf 254,319
+  s_b78d5a8dc9e4a2::t_a36d36fab3c81a 271-272,322-324
+skills/edit-value-growth/SKILL.md
+  s_b78d5a8dc9e4a2::t_9887acf59e3a32 37,45-48
+  s_b78d5a8dc9e4a2::t_b5ba06f890e43c 38-44
+  s_b78d5a8dc9e4a2::t_a36d36fab3c81a 49
+_templates/value-growth/style.css
+  s_b78d5a8dc9e4a2::t_97a34cf2406acf 33-34
+  s_b78d5a8dc9e4a2::t_a36d36fab3c81a 35
+  s_185e3835562dad::t_03bf91045d83e3 32
+skills/edit-value-growth/references/format.md
+  s_b78d5a8dc9e4a2::t_9887acf59e3a32 29-30,33-38
+  s_b78d5a8dc9e4a2::t_85fa919e55a82e 31-32
+_config/scripts/image-generation/generate_offering_images_gemini_nanobanana_api.py
+  s_b78d5a8dc9e4a2::t_a36d36fab3c81a 50,88,91,96,99-100,120
+  s_b78d5a8dc9e4a2::t_b5ba06f890e43c 51,74-80,94-95,101-118,121,123-134
+  s_b78d5a8dc9e4a2::t_97a34cf2406acf 1-49,52-73,81-87,89-90,92-93,98,119,122,135-252
+  s_b78d5a8dc9e4a2::t_da0f88417d8206 97
+_config/scripts/image-generation/README.md
+  s_b78d5a8dc9e4a2::t_b5ba06f890e43c 52-59
+  s_b78d5a8dc9e4a2::t_9887acf59e3a32 25,40-50,60-77,90-94
+  s_b78d5a8dc9e4a2::t_a36d36fab3c81a 51,78-86
+  s_185e3835562dad::t_f9b7d0f02cde54 87-89,95
+README.md
+  s_b78d5a8dc9e4a2::t_9887acf59e3a32 82
+  s_f6f225ef5892a4::t_aed2758056f6e4 17
+_wiring/product-domains/generate-value-growth-docs.py
+  s_b78d5a8dc9e4a2::t_97a34cf2406acf 10,70,72-73,75,277-284
+  s_b78d5a8dc9e4a2::t_a36d36fab3c81a 71,74
+_config/scripts/image-generation/test_offering_images.py
+  s_b78d5a8dc9e4a2::t_85fa919e55a82e 73,76,78,81-85,87-88
+  s_b78d5a8dc9e4a2::t_a36d36fab3c81a 74-75,77,79-80,86,89,161
+  s_b78d5a8dc9e4a2::t_9887acf59e3a32 1-72,90-160,162-212
+_wiring/value_growth_model.py
+  s_b78d5a8dc9e4a2::t_97a34cf2406acf 7,21-34,69,85-96
+  s_185e3835562dad::t_97805448ead7a4 97
+_templates/customers/landing_page.html
+  s_d2ec9339db7443::t_7b0c2f71f08c3c 421-433
+  s_d2ec9339db7443::t_3c1683562f4224 75-76,89-100,333,401-420,434-435,560,784,801
+  s_d2ec9339db7443::t_709539c89e1056 313-315,323,329-332,536,758,761,816,819,841,855,896,899,925,962,980
+  s_d2ec9339db7443::t_e1e6fe23ed4b8a 334
+_config/_schema/value-growth.schema.json
+  s_b78d5a8dc9e4a2::t_c4151bfe30fcd4 544-550,1067-1082
+  s_b78d5a8dc9e4a2::t_b764326f6581e3 1083-1084
+tests/test_value_growth.py
+  s_b78d5a8dc9e4a2::t_a36d36fab3c81a 148-149,156-157
+  s_b78d5a8dc9e4a2::t_9887acf59e3a32 136-147,150-155,158-186
+project-template/productscapes.py
+  s_f6f225ef5892a4::t_6f570e1bb9ef98 16
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "07cd7fc4c24da697f47aef509eee1822d62f72b4",
+  "prompts": {},
+  "sessions": {
+    "s_185e3835562dad": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a1df1e-ff2f-7553-9abb-5ad095aebca3",
+        "model": "gpt-6-astra"
+      },
+      "human_author": "Zeljko Obrenovic <zeljkoobrenovic@yahoo.com>"
+    },
+    "s_b78d5a8dc9e4a2": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a1df17-5708-71f2-8031-17af8a99ea03",
+        "model": "gpt-6-astra"
+      },
+      "human_author": "Zeljko Obrenovic <zeljkoobrenovic@yahoo.com>"
+    },
+    "s_d2ec9339db7443": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a1eb36-66c3-7e13-9735-7e192d8b59e3",
+        "model": "gpt-6-astra"
+      },
+      "human_author": "Zeljko Obrenovic <zeljkoobrenovic@yahoo.com>"
+    },
+    "s_f6f225ef5892a4": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "3b819b41-7667-4f05-a568-dcd1e89af32c",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Zeljko Obrenovic <zeljkoobrenovic@yahoo.com>"
+    }
+  }
+}
