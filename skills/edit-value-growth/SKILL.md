@@ -34,6 +34,19 @@ The page is `docs/<group>/<domain>/value-growth/index.html`, under Business.
   conversion measure. Separate the infrastructure buyer's offer from trials they
   configure for their own customers. Keep observed vendor terms separate from
   proposed packaging; no monthly fee does not establish free production usage.
+- For offering illustrations, add a concrete `illustrationPrompt` to each segment.
+  Use four illustrated panels: value unit, pricing unit, charging model and proof
+  of value. Show the customer's useful outcome, the billing meter, who pays and
+  how fees combine, and a fair comparison using the stated evidence. Use concrete
+  counters, invoice components and comparison worksheets, with short labels.
+  Distinguish customer funds and outcomes from provider fees, alternative plans
+  from additive charges, and a proposed measurement from a proven improvement.
+  Keep operational workflows in customer job, journey and tutorial illustrations.
+  Run `python3 productscapes.py images <domain-id> --kind offerings --dry-run` to
+  preview scope, then omit `--dry-run` to generate with the configured Gemini key.
+  The script links one local `image` per offering. Review its scene and alt text;
+  ordinary builds copy referenced images without making API calls.
+  Use `--overwrite` after revising prompts; otherwise existing images are reused.
 
 ## Evidence and market sizing
 

@@ -13,7 +13,7 @@ PROJECT = Path(__file__).resolve().parent
 def main():
     config = json.loads((PROJECT / 'productscapes.json').read_text(encoding='utf-8'))
     override = os.environ.get('PRODUCTSCAPES_HOME')
-    toolkit = Path(override or config.get('toolkit', '../productscape')).expanduser()
+    toolkit = Path(override or config.get('toolkit', '../productscape-factory')).expanduser()
     if not toolkit.is_absolute():
         toolkit = PROJECT / toolkit
     toolkit = toolkit.resolve()

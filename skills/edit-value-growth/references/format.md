@@ -26,6 +26,16 @@ Each segment has `customerRefs: [{customerId, jobIds, kpiIds}]`, `productIds` an
 stable IDs, not names. Empty reference arrays are allowed for prospective segments;
 explain their status rather than assigning an unrelated persona.
 
+Each segment can add `illustrationPrompt` (plain-text scene guidance) and one
+`image: {"src": "media/offering-example.png", "alt": "Description of the scene."}`.
+Illustrations explain value units, pricing units, the charging model and proof of
+value through concrete visual examples grounded in the segment's commercial fields.
+Images belong in `business/media/`; filenames use letters, digits, hyphens or
+underscores and a PNG, JPEG or WebP extension. Referenced files must exist and be
+nonempty. The renderer copies them to `value-growth/media/` and displays one image
+per offering in Value & monetization. Both fields are optional; prompts are not
+shown on the page. The image script adds a reference only after an image exists.
+
 `selling` contains `motion` (bottom-up/top-down/hybrid), users, champions, buyers,
 payers, channels and rationale. `positioning` contains `strategy`
 (dominant/differentiated/disruptive/mixed/unclassified), alternative, rationale and

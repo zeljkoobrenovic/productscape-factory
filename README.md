@@ -14,7 +14,7 @@ or API key is required. Optional image generation uses provider APIs.
 Clone the toolkit and run these commands:
 
 ```sh
-git clone https://github.com/zeljkoobrenovic/productscape.git
+git clone https://github.com/zeljkoobrenovic/productscape-factory.git
 cd productscape
 python3 productscapes.py new my-domain --group my-group --name "My Domain"
 python3 productscapes.py validate my-domain --strict-ids
@@ -79,6 +79,7 @@ For builds, a domain folder path also selects its data project automatically.
 | `skills --target .claude/skills` | Copy the same skills into another agent's skill directory |
 | `images ID --dry-run --lightweight` | Inspect optional image-generation scope |
 | `images ID --kind tutorial` | Generate tutorial concepts and configured overview illustrations |
+| `images ID --kind offerings` | Generate one illustration per Value & Growth offering |
 | `images ID --kind overview` | Generate the domain overview picture for the start page |
 | `images ID --kind deployments` | Generate the products-to-channels deployment map for the products page |
 

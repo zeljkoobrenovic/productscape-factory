@@ -4,6 +4,7 @@ from functools import lru_cache
 import json
 import math
 from pathlib import Path
+import re
 import sys
 from urllib.parse import urlsplit
 
@@ -15,6 +16,20 @@ import schema_check
 @lru_cache(maxsize=1)
 def value_growth_schema():
     return json.loads((TOOLKIT / '_config/_schema/value-growth.schema.json').read_text(encoding='utf-8'))
+
+
+def offering_image_path(business_dir, src):
+    """Resolve one portable offering image within its owning folder."""
+    pattern = value_growth_schema()['$defs']['offeringImage']['properties']['src']['pattern']
+    if not re.fullmatch(pattern, src):
+        raise ValueError('must be a PNG, JPEG or WebP filename under media/')
+    if business_dir is None:
+        return Path(src)
+    root = Path(business_dir).resolve()
+    target = root / src
+    if not target.resolve().is_relative_to(root):
+        raise ValueError('image path resolves outside the business folder')
+    return target
 
 
 def market_totals(scenario):
@@ -51,7 +66,7 @@ def walk(value, path='$'):
             yield from walk(item, f'{path}[{index}]')
 
 
-def validate_value_growth(payload, domain_id, domain_dir=None):
+def validate_value_growth(payload, domain_id, domain_dir=None, *, check_image_files=True):
     schema = value_growth_schema()
     errors = schema_check.validate(payload, schema)
     if errors:
@@ -66,6 +81,19 @@ def validate_value_growth(payload, domain_id, domain_dir=None):
     segments = {s['id'] for s in payload.get('segments', [])}
     entry_models = {m['id'] for m in payload.get('entryStrategy', {}).get('models', [])}
     catalog = reference_catalog(domain_dir) if domain_dir is not None else None
+
+    business = Path(domain_dir) / 'business' if domain_dir is not None else None
+    if business is not None and not business.resolve().is_relative_to(Path(domain_dir).resolve()):
+        errors.append('business folder resolves outside the domain')
+    for index, segment in enumerate(payload.get('segments', [])):
+        if 'image' not in segment:
+            continue
+        try:
+            image = offering_image_path(business, segment['image']['src'])
+            if business is not None and check_image_files and (not image.is_file() or not image.stat().st_size):
+                raise ValueError('referenced image is missing or empty')
+        except ValueError as error:
+            errors.append(f'$.segments[{index}].image.src: {error}')
 
     for path, obj in walk(payload):
         for key in ('updated', 'accessed', 'published', 'observedOn'):

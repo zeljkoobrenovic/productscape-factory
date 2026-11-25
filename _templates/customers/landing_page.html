@@ -72,6 +72,8 @@
             border: 1px solid lightgrey;
             display: inline-block;
             width: 280px;
+            max-width: calc(100% - 24px);
+            box-sizing: border-box;
             vertical-align: top;
         }
 
@@ -84,6 +86,18 @@
             vertical-align: top;
             font-size: 130%;
             display: inline-block;
+            max-width: calc(100% - 24px);
+            box-sizing: border-box;
+        }
+
+        .step table {
+            width: 100%;
+            table-layout: fixed;
+        }
+
+        .customer-heading {
+            font-size: 50px;
+            margin-left: 20px;
         }
 
         .repo {
@@ -296,7 +310,9 @@
         }
 
         .job-detail-hero {
-            width: 900px;
+            width: 100%;
+            max-width: 900px;
+            height: auto;
             object-fit: contain;
             margin-top: 12px;
             margin-bottom: 12px;
@@ -304,10 +320,16 @@
         }
 
         .job-step-image {
-            max-width: 240px;
+            max-width: min(100%, 240px);
             margin-top: 12px;
             margin-bottom: 12px;
             box-shadow: rgba(0, 0, 0, 0.12) 0px 1px 3px, rgba(0, 0, 0, 0.24) 0px 1px 2px;
+        }
+
+        .job-media-frame {
+            display: inline-block;
+            width: 100%;
+            max-width: 900px;
         }
 
         .comic-job {
@@ -375,6 +397,41 @@
             border-radius: 10px;
             background: #f8fafc;
             box-shadow: rgba(0, 0, 0, 0.12) 0px 4px 14px;
+        }
+        @media (max-width: 720px) {
+            #Header table, #Header tbody, #Header tr, #Header td,
+            #Home .doc table, #Home .doc tbody, #Home .doc tr, #Home .doc td {
+                display: block;
+                width: auto !important;
+                max-width: 100%;
+            }
+
+            #Header td > div, #Home .doc {
+                margin-left: 0 !important;
+            }
+
+            .customer-heading {
+                font-size: 32px;
+                overflow-wrap: anywhere;
+            }
+
+            .job-summary-table {
+                margin: 12px 0;
+                width: 100%;
+            }
+
+            .job-summary-table tr, .job-summary-table td {
+                display: block;
+                width: auto !important;
+            }
+
+            .job-summary-table tr {
+                margin-bottom: 20px;
+            }
+
+            .job-summary-table tr:first-child, .job-summary-table td:nth-child(2) {
+                display: none;
+            }
         }
     </style>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Ubuntu">
@@ -476,7 +533,7 @@ ${tabs_script}
             }
             html += '<a href="' + per.id + '.html">';
             const tabClass = per.id === customer.id ? 'tab-image-selected' : 'tab-image';
-            html += '<img src="../icons/' + per.icon + '" style="" class="' + tabClass + '" onerror="this.onerror=null;this.src=\'../icons/customer.png\'">';
+            html += '<img src="../icons/' + per.icon + '" alt="' + escapeHtml(per.name || per.id) + '" class="' + tabClass + '" onerror="this.onerror=null;this.src=\'../icons/customer.png\'">';
             html += '</a>';
         });
         html += '</div>';
@@ -500,7 +557,7 @@ ${tabs_script}
         html += '<div style="margin-left: 20px; font-size: 90%; color: grey; vertical-align: top">';
         html += '<div class="page-type-badge" style="">Customer</div>';
         html += '</div>';
-        html += '<div style="font-size: 50px; margin-left: 20px">';
+        html += '<div class="customer-heading">';
         html += customer.name;
         html += '</div>';
         html += '<div style="font-size: 16px; margin-left: 20px; color: grey; margin-top: 3px">';
@@ -698,10 +755,10 @@ ${tabs_script}
             if (job.media) {
                 html += '<div style="margin-top: 10px">';
                 job.media.forEach(item => {
-                    html += '<div style="display: inline-block">';
+                    html += '<div class="job-media-frame">';
                     const src = '../' + item.src;
                     html += '<a target="_blank" href="' + src + '">';
-                    html += '<img src="' + src + '" class="job-detail-hero">';
+                    html += '<img src="' + src + '" class="job-detail-hero" alt="' + escapeHtml(item.alt || item.title || job.name) + '" loading="lazy" decoding="async">';
                     html += '</a>';
                     html += '</div>';
                 });
@@ -724,7 +781,7 @@ ${tabs_script}
                     html += '<tr>';
                     html += '<td style=" text-align: left; padding: 0;">';
                     html += '<div style="margin: 6px; border: 1px dashed lightgrey; padding: 6px; ">';
-                    html += '<div style="color: blue; font-size: 80%; white-space: nowrap; overflow: hidden; ">';
+                    html += '<div style="color: blue; font-size: 80%; overflow-wrap: anywhere;">';
                     const streamHref = streamBrickHref(stream.id);
                     html += streamHref
                         ? '<a href="' + streamHref + '" style="color: blue; text-decoration: none;">' + stream.name + '</a>'
@@ -741,7 +798,7 @@ ${tabs_script}
                     html += '<tr>';
                     html += '<td style=" text-align: left; padding: 0;">';
                     html += '<div style="margin: 6px 6px 6px 24px; border-left: 2px solid #eee; padding: 2px 6px; ">';
-                    html += '<div style="color: #888; font-size: 70%; white-space: nowrap; overflow: hidden; ">';
+                    html += '<div style="color: #888; font-size: 70%; overflow-wrap: anywhere;">';
                     const brickHref = streamBrickHref(brick.id);
                     html += '&#8627; ' + (brickHref
                         ? '<a href="' + brickHref + '" style="color: #888; text-decoration: none;">' + brick.name + '</a>'
@@ -756,10 +813,10 @@ ${tabs_script}
                 if (step.media) {
                     html += '<div style="margin-top: 10px">';
                     step.media.forEach(item => {
-                        html += '<div style="display: inline-block">';
+                        html += '<div class="job-media-frame">';
                         const src = '../' + item.src;
                         html += '<a target="_blank" href="' + src + '">';
-                        html += '<img src="' + src + '" class="job-step-image">';
+                        html += '<img src="' + src + '" class="job-step-image" alt="' + escapeHtml(item.alt || item.title || step.step) + '" loading="lazy" decoding="async">';
                         html += '</a>';
                         html += '</div>';
                     });
@@ -781,7 +838,7 @@ ${tabs_script}
                 job.media.forEach(item => {
                     const src = '../' + item.src;
                     html += '<a target="_blank" href="' + src + '">';
-                    html += '<img src="' + src + '">';
+                    html += '<img src="' + src + '" alt="' + escapeHtml(item.alt || item.title || job.name) + '" loading="lazy" decoding="async">';
                     html += '</a>';
                 });
                 html += '</div>';
@@ -795,7 +852,7 @@ ${tabs_script}
                     step.media.forEach(item => {
                         const src = '../' + item.src;
                         html += '<a target="_blank" href="' + src + '">';
-                        html += '<img src="' + src + '">';
+                        html += '<img src="' + src + '" alt="' + escapeHtml(item.alt || item.title || step.step) + '" loading="lazy" decoding="async">';
                         html += '</a>';
                     });
                     html += '</div>';
@@ -836,10 +893,10 @@ ${tabs_script}
                     if (!item || !item.src) {
                         return;
                     }
-                    html += '<div style="display: inline-block">';
+                    html += '<div class="job-media-frame">';
                     const src = '../' + item.src;
                     html += '<a target="_blank" href="' + src + '">';
-                    html += '<img src="' + src + '" class="job-detail-hero">';
+                    html += '<img src="' + src + '" class="job-detail-hero" alt="' + escapeHtml(item.alt || item.title || journey.name) + '" loading="lazy" decoding="async">';
                     html += '</a>';
                     html += '</div>';
                 });
@@ -865,7 +922,7 @@ ${tabs_script}
                         const src = '../' + item.src;
                         html += '<div style="margin-bottom: 12px">';
                         html += '<a target="_blank" href="' + src + '">';
-                        html += '<img src="' + src + '" class="review-image-small">';
+                        html += '<img src="' + src + '" class="review-image-small" alt="' + escapeHtml(item.alt || item.title || stage.stage) + '" loading="lazy" decoding="async">';
                         html += '</a>';
                         html += '</div>';
                     });
@@ -902,7 +959,7 @@ ${tabs_script}
                     }
                     const src = '../' + item.src;
                     html += '<a target="_blank" href="' + src + '">';
-                    html += '<img src="' + src + '">';
+                    html += '<img src="' + src + '" alt="' + escapeHtml(item.alt || item.title || journey.name) + '" loading="lazy" decoding="async">';
                     html += '</a>';
                 });
                 html += '</div>';
@@ -920,7 +977,7 @@ ${tabs_script}
                         }
                         const src = '../' + item.src;
                         html += '<a target="_blank" href="' + src + '">';
-                        html += '<img src="' + src + '">';
+                        html += '<img src="' + src + '" alt="' + escapeHtml(item.alt || item.title || stage.stage) + '" loading="lazy" decoding="async">';
                         html += '</a>';
                     });
                     html += '</div>';

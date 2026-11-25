@@ -133,6 +133,57 @@ class ValueGrowth(unittest.TestCase):
             self.assertIn('Value &amp; Growth is not yet documented', raw.replace('Value & Growth', 'Value &amp; Growth'))
             self.assertNotIn('id="market-form"', raw)
 
+    def test_offering_image_is_optional_copied_escaped_and_only_shown_once(self):
+        image = self.domain / 'business/media/offering-teams.webp'
+        image.parent.mkdir()
+        image.write_bytes(b'fixture image bytes')
+        prompt = image.with_suffix('.prompt.txt')
+        prompt.write_text('Private illustration instructions, not page content.')
+        self.model['segments'][0]['image'] = {'src': 'media/offering-teams.webp', 'alt': 'A team with <clear> roles & shared work.'}
+        self.model['segments'][0]['illustrationPrompt'] = prompt.read_text()
+        self.write()
+        before = snapshot(self.project / '_config')
+        result = self.command(CLI, 'images', 'example', '--kind', 'offerings', '--dry-run', '--project', self.project)
+        self.assertIn('Reuse: teams', result.stdout)
+        result = self.command(CLI, 'images', 'example', '--kind', 'offerings', '--overwrite', '--dry-run', '--project', self.project)
+        self.assertIn('Generate: teams', result.stdout)
+        self.command(GENERATOR, '--domain-dir', self.domain)
+        self.assertEqual(snapshot(self.project / '_config'), before)
+        raw = self.page.read_text()
+        self.assertEqual(raw.count('<figure class="offering-image">'), 1)
+        self.assertIn('alt="A team with &lt;clear&gt; roles &amp; shared work."', raw)
+        self.assertIn('loading="lazy"', raw)
+        self.assertIn('href="media/offering-teams.webp" target="_blank" rel="noopener noreferrer"', raw)
+        self.assertIn('Open full-size illustration', raw)
+        self.assertNotIn(prompt.read_text(), raw)
+        self.assertEqual((self.page.parent / 'media/offering-teams.webp').read_bytes(), image.read_bytes())
+        self.assertFalse((self.page.parent / 'media/offering-teams.prompt.txt').exists())
+        image.unlink()
+        result = self.command(GENERATOR, '--domain-dir', self.domain, ok=False)
+        self.assertIn('referenced image is missing', result.stdout + result.stderr)
+        self.assertEqual(self.page.read_text(), raw)
+
+    def test_offering_image_paths_cannot_escape_source_or_output(self):
+        for src in ('../outside.png', 'https://example.com/x.png', 'media/../x.png', 'media/x.svg'):
+            self.model['segments'][0]['image'] = {'src': src, 'alt': 'Example.'}
+            self.assertTrue(validate_value_growth(self.model, 'example', self.domain))
+        self.model['segments'][0]['image'] = {'src': 'media/teams.png', 'alt': 'Example.'}
+        image = self.domain / 'business/media/teams.png'
+        image.parent.mkdir()
+        outside = self.project / 'outside.png'
+        outside.write_bytes(b'untouched')
+        image.symlink_to(outside)
+        self.assertIn('outside the business folder', '\n'.join(validate_value_growth(self.model, 'example', self.domain)))
+        image.unlink()
+        image.write_bytes(b'image')
+        self.write()
+        self.command(GENERATOR, '--domain-dir', self.domain)
+        output = self.page.parent / 'media/teams.png'
+        output.unlink()
+        output.symlink_to(outside)
+        self.command(GENERATOR, '--domain-dir', self.domain, ok=False)
+        self.assertEqual(outside.read_bytes(), b'untouched')
+
     def test_market_math_handles_zero_and_uses_sam_for_som(self):
         scenario = self.model['market']['scenarios'][0]
         self.assertEqual(market_totals(scenario), {'tam': 1200000, 'sam': 480000, 'som': 48000})

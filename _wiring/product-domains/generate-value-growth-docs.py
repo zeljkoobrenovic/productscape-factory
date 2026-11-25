@@ -7,7 +7,7 @@ import re
 from domain_cli import load_domain_args
 from generator_common import domain_docs_path, domain_source_path, template_path
 import project_paths
-from value_growth_model import market_totals, reference_catalog, validate_value_growth, walk
+from value_growth_model import market_totals, offering_image_path, reference_catalog, validate_value_growth, walk
 
 
 def p(text, cls=''):
@@ -67,7 +67,12 @@ class Renderer:
         content = p('Read each offer from the customer outcome through the unit charged. A usage measure is useful only when it tracks meaningful progress.')
         content += '<div class="table-scroll"><table><caption>Value and pricing by offering</caption><thead><tr><th>Offering</th><th>Customer outcome</th><th>Value unit</th><th>Pricing unit</th></tr></thead><tbody>' + ''.join(rows) + '</tbody></table></div>'
         for s in self.model.get('segments', []):
-            content += (f'<article class="panel segment" id="segment-{s["id"]}"><h3>{escape(s["name"])}</h3>' + p(s['summary'])
+            picture = s.get('image')
+            illustration = (f'<figure class="offering-image"><a href="{escape(picture["src"], quote=True)}" target="_blank" rel="noopener noreferrer" '
+                            f'aria-label="{escape("Open illustration: " + s["name"], quote=True)}">'
+                            f'<img src="{escape(picture["src"], quote=True)}" alt="{escape(picture["alt"], quote=True)}" '
+                            'loading="lazy" decoding="async"><span class="offering-image-hint">Open full-size illustration</span></a></figure>') if picture else ''
+            content += (f'<article class="panel segment" id="segment-{s["id"]}"><h3>{escape(s["name"])}</h3>' + illustration + p(s['summary'])
                         + pairs([('Charging model', s['pricingModel']), ('How to prove value', s['valueProof'])])
                         + self.related(s) + self.evidence(s) + '</article>')
         if self.model.get('benchmarks'):
@@ -269,6 +274,14 @@ def create_docs(domain):
     if not folder.resolve().is_relative_to(project_paths.DOCS_ROOT):
         raise ValueError('Value & Growth output resolves outside the docs folder')
     # Prepare everything before replacing the previous page.
+    images = []
+    for segment in model.get('segments', []):
+        if 'image' in segment:
+            src = segment['image']['src']
+            images.append((offering_image_path(folder, src), offering_image_path(root / 'business', src).read_bytes()))
+    for destination, data in images:
+        destination.parent.mkdir(parents=True, exist_ok=True)
+        destination.write_bytes(data)
     (folder / 'icons').mkdir(parents=True, exist_ok=True)
     (folder / 'icons/logo.svg').write_bytes(icon)
     (folder / 'index.html').write_text(page, encoding='utf-8')

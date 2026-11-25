@@ -541,6 +541,13 @@
         },
         "evidence": {
           "$ref": "#/$defs/evidence"
+        },
+        "illustrationPrompt": {
+          "type": "string",
+          "pattern": "\\S"
+        },
+        "image": {
+          "$ref": "#/$defs/offeringImage"
         }
       },
       "required": [
@@ -1055,6 +1062,24 @@
         "paidTrigger",
         "conversionMetric",
         "evidence"
+      ],
+      "additionalProperties": false
+    },
+    "offeringImage": {
+      "type": "object",
+      "properties": {
+        "src": {
+          "type": "string",
+          "pattern": "^media/[A-Za-z0-9][A-Za-z0-9_-]*\\.(png|jpg|jpeg|webp)$"
+        },
+        "alt": {
+          "type": "string",
+          "pattern": "\\S"
+        }
+      },
+      "required": [
+        "src",
+        "alt"
       ],
       "additionalProperties": false
     }

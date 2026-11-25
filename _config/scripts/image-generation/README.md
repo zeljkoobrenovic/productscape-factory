@@ -22,6 +22,7 @@ Sources live in `_config/product-domains/<group>/<domain-id>/`. All image script
 - generates one rich, square customer-role portrait per customer in the same colored cartoon style as the customer-relations overview, saves it in `customers/icons/`, and updates the existing `icon` field
 - generates one Gemini Nano Banana illustration for every residuality stressor, writes it into `residuality/media/`, and patches the stressor's `media` entry
 - illustrates tutorial concepts, participant maps, and walkthrough overviews; saves images and prompts in `tutorial/media/` and updates their `media` entries in `tutorial/tutorial.json`
+- illustrates each Value & Growth offering; saves images and prompts in `business/media/` and links one `image` per segment in `business/value-growth.json`
 - draws one high-level overview of each domain (its products and building blocks inside, its customers, external systems, and competitors outside) and saves it with its prompt and alt text in `start/media/`
 - draws one deployment map per domain (products, shared bricks, channel-group lanes with their channels; no product-specific links) and saves it with its prompt and alt text in `product-deployments/media/`
 
@@ -35,6 +36,62 @@ Sources live in `_config/product-domains/<group>/<domain-id>/`. All image script
 The API scripts use only Python's standard library. The general missing-domain-icon generator also needs `ffmpeg` and `ffprobe` for monochrome icon post-processing. The dedicated customer portrait generator preserves the returned image directly and does not need those tools.
 
 ## Usage
+
+### Offering illustrations
+
+Generate one image for each `segments[]` entry in `business/value-growth.json`:
+
+```sh
+python3 productscapes.py images my-domain --kind offerings --dry-run
+python3 productscapes.py images my-domain --kind offerings
+python3 productscapes.py build my-domain --sections value-growth
+```
+
+The script uses `GEMINI_API_KEY` and the existing Gemini client. Its defaults are
+`gemini-3-pro-image-preview`, `16:9`, and `2K`. Prompts combine the offering's
+roles, outcome, value unit, pricing unit, charging model and proof of value with
+an optional `illustrationPrompt`. Four illustrated panels explain what the customer
+gets, what the provider meters, how fees combine and how a buyer can test the
+benefit. Counters, invoice components and comparison worksheets carry the detail;
+small adult cartoon characters, navy outlines and teal accents match the domain.
+Prompts distinguish alternative plans from additive charges, customer funds from
+provider fees, and measurement plans from proven results. Operational workflows
+belong in job, journey or tutorial images.
+
+For a selected offering, or to preview its full prompt, run the script directly
+from the toolkit checkout:
+
+```sh
+python3 _config/scripts/image-generation/generate_offering_images_gemini_nanobanana_api.py \
+  --project ../productscape-examples --domain payments-and-revenue-infrastructure \
+  --offering online-checkout --dry-run --show-prompts
+```
+
+Use `--limit 1` to generate one new image, `--overwrite` to regenerate selected
+images, and `--json-only` to link existing files without API calls. Existing images
+are reused by default, including those in another supported format. An offering's
+`image.src` and reviewed `image.alt` are preserved when reusing its illustration.
+Stable filenames are `media/offering-<segment-id>.<format>`; PNG, JPEG and WebP
+responses keep their actual format. Exact prompts are saved as `.prompt.txt`.
+Each successful image is linked immediately, so interrupted runs can resume.
+Review the generated scene and alt text before publishing.
+
+After changing prompts, rerun with `--overwrite`; a normal run reuses existing
+images even when their prompts have changed. The public CLI also accepts this flag:
+
+```sh
+python3 productscapes.py images my-domain --kind offerings --overwrite
+python3 productscapes.py build my-domain --sections value-growth
+```
+
+For finer control, the direct script accepts `--image-size 4K`. Displayed offering
+images are capped at 1,000 px and shrink to fit smaller cards. They open at original
+resolution in a new tab; the display limit does not resize the image files.
+
+Only referenced images are copied into the Value & Growth page. Builds never
+call the API. Domains without offerings are skipped. `--dry-run` writes nothing
+and needs no key. Offering runs leave customer job and journey images untouched;
+their existing `--kind jtbd` and `--kind journey` commands remain available.
 
 ### Tutorial illustrations
 

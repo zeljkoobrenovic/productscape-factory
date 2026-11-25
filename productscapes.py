@@ -251,6 +251,7 @@ def images(args):
     resolve_domain_dir(args.domain, domains_root=args.project / '_config/product-domains')
     scripts = {
         'tutorial': 'generate_tutorial_images_gemini_nanobanana_api.py',
+        'offerings': 'generate_offering_images_gemini_nanobanana_api.py',
         'jtbd': 'generate_jtbd_images_gemini_nanobanana_api.py',
         'journey': 'generate_journey_images_gemini_nanobanana_api.py',
         'relations': 'generate_customer_relations_images_gemini_nanobanana_api.py',
@@ -267,6 +268,8 @@ def images(args):
             extra.append('--lightweight')
         if args.skip_existing:
             extra.append('--skip-existing')
+        if args.overwrite:
+            extra.append('--overwrite')
         run_script('_config/scripts/image-generation/' + scripts[kind], extra, args.project)
 
 
@@ -313,10 +316,12 @@ def main():
     kpis.set_defaults(action=lambda args: run_script('skills/scripts/check-kpi-pyramids.py', [args.domain], args.project))
     media = commands.add_parser('images', parents=[common], help='Optional Gemini image generation (requires credentials).')
     media.add_argument('domain')
-    media.add_argument('--kind', choices=('jtbd', 'journey', 'relations', 'residuality', 'icons', 'tutorial', 'overview', 'deployments', 'all'), default='all')
+    media.add_argument('--kind', choices=('jtbd', 'journey', 'relations', 'residuality', 'icons', 'tutorial', 'offerings', 'overview', 'deployments', 'all'), default='all')
     media.add_argument('--dry-run', action='store_true')
     media.add_argument('--lightweight', action='store_true')
-    media.add_argument('--skip-existing', action='store_true')
+    existing = media.add_mutually_exclusive_group()
+    existing.add_argument('--skip-existing', action='store_true')
+    existing.add_argument('--overwrite', action='store_true', help='Regenerate existing images in the selected kind.')
     media.set_defaults(action=images)
     args = parser.parse_args()
     try:
